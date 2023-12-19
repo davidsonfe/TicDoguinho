@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form id="formEditTutor"txtLogin" value="#{tutorController.selection.usuario}"
+                                 required="true" requiredMessage="O Campo login é obrigatório"/>
+                    <p:message for="txtLogin" />
+                    
+                    <h:outputText value="email*:"/>
+                    <p:inputText value="#{tutorController.selection.email}"
+                                 id="txtEmail" required="true" requiredMessage="O campo email é obrigatório"/>
+                     <p:message for="txtEmail"/>
+                    
+                    <h:outputText value="senha:"/>
+                    <p:inputText value="#{tutorController.selection.senha}" required="true" requiredMessage="O campo email é obrigatório"/>
+                    <h:outputText/>
+                </h:panelGrid>
+                
+                <p:commandButton value="editar" oncomplete="PF('widDialEditTutor').show()"/> 
+                <h:commandButton value="cancelar"/>
+                
+            </p:fieldset>
+            
+            <p:dialog id="dialCadTutor"  
+                      modal="true" visible="false" showEffect="fade" hideEffect="fade"
+                      widgetVar="widDialEditTutor">
+                
+                <h:outputText value="Deseja realmente editar o tutor?"/><br/>
+                <p:commandButton value="sim" action="#{tutorController.alterar()}"
+                                 oncomplete="PF('widDialCadTutor').hide();"
+                                  />
+                <p:commandButton value="não" oncomplete="PF('widDialCadTutor').hide()"/>
+                
+            </p:dialog>
+            
+        </h:form>
+    </h:body>
+</html>
+

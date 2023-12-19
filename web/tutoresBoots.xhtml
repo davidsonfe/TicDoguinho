@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+
+        <b:growl delay="4000"/>
+        <b:form id="formTutores">
+
+            <b:commandButton style-class="btn-primary" value="Cadastrar"
+                             ajax="true" 
+                             action="#{tutorController.modalType('create')}" 
+                             oncomplete="$('.bCadastro').modal('show')"
+                             update=":formCadTutor:modalCadastro"/>
+
+            <b:dataTable id="tblTutores" 
+                         value="#{tutorController.readTutores()}"
+                         var="tutor" pdf="true">
+
+                <b:dataTableColumn value="#{tutor.codigo}" label="Código"/>
+                <b:dataTableColumn value="#{tutor.usuario}" label="login"/>
+                <b:dataTableColumn value="#{tutor.email}" label="email"/>
+                <b:dataTableColumn value="#{tutor.mamae}" label="Mamãe"/>
+                <b:dataTableColumn label="action">
+                    <b:commandButton icon="search" ajax="true" 
+                                     oncomplete="$('.bDetail').modal('show')"
+                                     update=":formTutores:modalDetail">
+                        <f:setPropertyActionListener value="#{tutor}" 
+                                                     target="#{tutorController.selection}"/>
+                    </b:commandButton>
+                    <b:commandButton icon="pencil" action="#{tutorController.modalType('edit')}"
+                                     oncomplete="$('.bCadastro').modal('show')"
+                                     update=":formCadTutor:modalCadastro">
+                        <f:setPropertyActionListener value="#{tutor}" 
+                                                     target="#{tutorController.selection}"/>
+                    </b:commandButton>
+                </b:dataTableColumn>
+
+            </b:dataTable>
+
+            <b:modal id="modalDetail" class="bDetail">
+
+                <b:panelGrid columns="2">
+
+                    <h:outputText value="Login:"/>
+                    <h:outputText value="#{tutorController.selection.usuario}"/>
+
+                    <h:outputText value="Senha:"/>
+                    <h:outputText value="#{tutorController.selection.senha}"/>
+
+                    <h:outputText value="Email:"/>
+                    <h:outputText value="#{tutorController.selection.email}"/>
+
+                    <h:outputText value="Mamãe:"/>
+                    <h:outputText value="#{tutorController.selection.mamae}"/>
+
+                </b:panelGrid>
+
+            </b:modal>
+
+        </b:form>
+
+        <b:form id="formCadTutor">
+            <b:modal id="modalCadastro" class='bCadastro' closable="false" title="#{(tutorController.modalType) eq 'create'?'Cadastro de novo tutor':'edite o tutor'}">
+
+
+                <b:panelGrid columns="2">
+
+                    <h:outputText value="Login:"/>
+                    <c:choose>
+                        <c:when test="#{tutorController.modalType eq 'create'}">
+                            <b:inputText value="#{tutorController.tutorCadastro.usuario}"/>
+                        </c:when>
+                        <c:otherwise>
+                            <b:inputText  value="#{tutorController.selection.login}"/>
+                        </c:otherwise>
+                    </c:choose>
+
+
+                    <h:outputText value="Email:"/>
+                    <c:choose>
+                        <c:when test="#{tutorController.modalType eq 'create'}">
+                            <b:inputText value="#{tutorController.tutorCadastro.email}"/>
+                        </c:when>
+                        <c:otherwise>
+                            <b:inputText value="#{tutorController.selection.email}"/>
+                        </c:otherwise>
+                    </c:choose>
+
+                    <h:outputText value="Mamãe:"/>
+                    <c:choose>
+                        <c:when test="#{tutorController.modalType eq 'create'}">
+                            <b:inputText value="#{tutorController.tutorCadastro.mamae}"/>
+                        </c:when>
+                        
+                    </c:choose>
+
+
+                    <c:if test="#{tutorController.modalType eq 'create'}">
+                        <h:outputText value="Senha:"/>
+                        <b:inputSecret value="#{tutorController.tutorCadastro.senha}"/>
+                    </c:if>
+
+
+                    <c:if test="#{tutorController.modalType eq 'create'}">
+                        <h:outputText value="Confirma:"/>
+                        <b:inputSecret value="#{confirma}"/>
+                    </c:if>
+
+                    <c:choose>
+                        <c:when test="#{tutorController.modalType eq 'create'}">
+                            <b:commandButton value="Cadastrar" 
+                                             action="#{tutorController.inserir(confirma)}" />
+                        </c:when>
+                        <c:otherwise>
+                            <b:commandButton value="Alterar" 
+                                             action="#{tutorController.alterar()}"/>
+                        </c:otherwise>
+                    </c:choose>
+
+
+                </b:panelGrid>
+
+            </b:modal>
+        </b:form>
+
+
+    </h:body>
+</html>
+

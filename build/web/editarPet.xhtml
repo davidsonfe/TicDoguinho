@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Editar Pet</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+        <style>
+            body {
+                text-align: center;
+                margin: 50px;
+            }
+
+            .form-container {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .form-container h2 {
+                font-size: 25pt;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .form-container label {
+                font-size: 18pt;
+                font-style: italic;
+                display: block;
+                margin-top: 10px;
+            }
+
+            .form-container input {
+                font-size: 18pt;
+                font-style: italic;
+                width: 100%;
+                margin-top: 5px;
+            }
+
+            .form-container .custom-button {
+                font-size: 20px; /* Tamanho personalizado do botão */
+                margin-top: 10px;
+            }
+            
+            .custom-messages {
+                font-size: 20px; /* Tamanho personalizado para as mensagens */
+                /* Adicione outros estilos conforme necessário */
+            }
+
+        </style>
+    </h:head>
+    <h:body>
+        <div class="form-container">
+            <b:form id="editarPetForm">
+                <h2>Editar Pet</h2>
+                
+               <h:messages styleClass="custom-messages" globalOnly="true" />
+               
+               <h:messages id="mensagemExclusao" />
+                
+                <h:outputLabel for="nome" value="Nome:" />
+                <b:inputText id="nome" value="#{petController.selectionPet.nome}" styleClass="form-control" />
+
+                <h:outputLabel for="sexo" value="Sexo:" />
+                <b:inputText id="sexo" value="#{petController.selectionPet.sexo}" styleClass="form-control" />
+                
+                <h:outputLabel for="porte" value="Porte:" />
+                <b:inputText id="porte" value="#{petController.selectionPet.porte}" styleClass="form-control" />
+
+                <h:outputLabel for="nascimento" value="Mes e ano de Nascimento:" />
+                <b:inputText id="nascimento" value="#{petController.selectionPet.mesAnoNascimento}" styleClass="form-control" />
+                
+                <b:commandButton value="Salvar" action="#{petController.alterar()}" styleClass="btn btn-primary custom-button" />
+                
+                <b:commandButton value="Excluir" action="#{petController.excluir()}" styleClass="btn btn-danger custom-button" />
+            </b:form>
+
+            
+        </div>
+    </h:body>
+</html>
