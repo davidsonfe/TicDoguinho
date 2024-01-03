@@ -37,6 +37,9 @@ public class PetController {
     private Pet petCadastro;
 
     private Pet selectionPet;
+    
+    private String nomePesquisa;
+    private List<Pet> petsEncontrados;
 
     @PostConstruct
     public void init() {
@@ -170,6 +173,27 @@ public class PetController {
         this.selectionPet = pet;
         return "editarPet.xhtml?faces-redirect=true";
     }
+    
+    
+    // Adicione o seguinte método ao seu controlador
+public void pesquisarPets() {
+    if (nomePesquisa != null && !nomePesquisa.isEmpty()) {
+        String query = "select p from Pet p where p.nome = '" + nomePesquisa + "'";
+        petsEncontrados = ManagerDao.getCurrentInstance().read(query, Pet.class);
+
+        // Lógica adicional, se necessário
+
+    } else {
+        addErrorMessage("Digite um nome para realizar a pesquisa.");
+    }
+}
+
+
+    private void addErrorMessage(String message) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
+    }
+    
+
 
     public Pet getPetCadastro() {
         return petCadastro;
@@ -187,4 +211,20 @@ public class PetController {
         this.selectionPet = selectionPet;
     }
 
+    public String getNomePesquisa() {
+        return nomePesquisa;
+    }
+
+    public void setNomePesquisa(String nomePesquisa) {
+        this.nomePesquisa = nomePesquisa;
+    }
+
+    public List<Pet> getPetsEncontrados() {
+        return petsEncontrados;
+    }
+
+    public void setPetsEncontrados(List<Pet> petsEncontrados) {
+        this.petsEncontrados = petsEncontrados;
+    }
+    
 }

@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+
+    <h:head>
+        <title>Postagem</title>
+    </h:head>
+
+    <h:body>
+        <b:form enctype="multipart/form-data">
+            <!-- Data e hora da postagem -->
+            <h:outputText value="#{postagemBean.postagem.dataHoraPostagem}" />
+
+            <!-- Upload de Vídeo do Pet -->
+            <h:outputText value="Upload de Vídeo do Pet:" />
+            <p:fileUpload fileUploadListener="#{postagemBean.handleFileUploadPet}" mode="advanced" />
+
+            <!-- Upload de Vídeo do Tutor -->
+            <h:outputText value="Upload de Vídeo do Tutor:" />
+            <p:fileUpload fileUploadListener="#{postagemBean.handleFileUploadTutor}" mode="advanced" />
+
+            <!-- Botão para submeter a postagem -->
+            <h:outputText value="#{postagemBean.postagem.getDataHoraPostagem()}" />
+            
+            <!-- Botão para submeter a postagem -->
+            <!-- Adicione um actionListener para chamar um método que realiza a postagem -->
+            <!-- Botão para submeter a postagem -->
+            <b:commandButton value="Postar" action="#{postagemBean.realizarPostagem}" />
+
+
+
+
+        </b:form>
+    </h:body>
+</html>

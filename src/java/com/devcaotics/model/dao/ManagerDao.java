@@ -107,4 +107,8 @@ public class ManagerDao {
         
     }
     
+    public EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
+    
 }

@@ -1,56 +1,179 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Editar Página</title>
+        <style>
+            body {
+                background-color: #F7F7F7; /* Cor de fundo do TikTok */
+                color: #000000; /* Cor do texto padrão do TikTok */
+            }
+
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                padding: 20px;
+                background-color: #ccc;
+            }
+
+            .video-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                margin-top: 20px;
+            }
+
+            .video-item {
+                margin: 10px;
+                text-align: center;
+                width: 100%;
+                background-color: #FFFFFF; /* Cor de fundo do contêiner de vídeo */
+                padding: 15px; /* Espaçamento interno */
+                border-radius: 10px; /* Borda arredondada */
+            }
+
+            .video-item video {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .video-item h3 {
+                margin-top: 5px;
+                color: #E44D26; /* Cor do texto de título do TikTok */
+            }
+
+            .search-results {
+                margin-top: 20px;
+            }
+
+            .search-results h2 {
+                color: #E44D26; /* Cor do texto de título do TikTok */
+                margin-bottom: 10px;
+            }
+
+            .search-results table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+
+            .search-results th,
+            .search-results td {
+                padding: 10px;
+                text-align: left;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .search-results img {
+                width: 50px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 50%;
+                margin-right: 10px;
+            }
+        </style>
     </h:head>
+
     <h:body>
         <ui:include src="menuTutor.xhtml"/>
 
-        <b:form auto-update="true">
-            <b:panelGrid columns="2" colSpans="2,10" style="position: relative;">
-                <b:panel style="width: 400px;">
-                    <h:outputText value="#{petController.selectionPet.nome}"/>
-                    <b:panel style="position: relative;">
-                        <img class="imgPet" src="data:image/jpeg;base64,#{petController.imagemDoPetSelectionado()}" 
-                             style="border-radius: 50%; width: 100px; height: 100px;"/>
-                    </b:panel>
-
-                    <div style="position: absolute; top: 60px; left: 40px; background: none; border: none;">
-                        <img src="data:image/jpeg;base64, #{petController.imagensDosTutoresDoPet(petController.tutores()).get(0)}"
-                             style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;"/>
-                    </div>
-                    <c:if test="#{petController.tutores().size() eq 2}">
-                        <div style="position: absolute; top: 60px; left: 120px; background: none; border: none;">
-                            <img src="data:image/jpeg;base64, #{petController.imagensDosTutoresDoPet(petController.tutores()).get(1)}"
-                                 style="width: 35px; height: 35px; object-fit: cover; border-radius: 50%;"/>
-                        </div>
-                    </c:if>
-
-                    <b:panelGrid columns="2" colSpans="2,10">
-                        <h:outputText value="Nome"/>
+        <b:form id="petForm" auto-update="true">
+            <div class="container">
+                <b:panelGrid columns="2" colSpans="2,10" style="position: relative;">
+                    <b:panel style="width: 600px;">
                         <h:outputText value="#{petController.selectionPet.nome}"/>
-                        
-                        <h:outputText value="Raça"/>
-                        <h:outputText value="#{petController.selectionPet.raca}"/>
-                        
-                        <h:outputText value="Porte"/>
-                        <h:outputText value="#{petController.selectionPet.porte}"/>
-                        
-                        <h:outputText value="Código"/>
-                        <h:outputText value="#{petController.selectionPet.codigoUnico}"/>
+                        <b:panel style="position: relative;">
+                            <img class="imgPet" src="data:image/jpeg;base64,#{petController.imagemDoPetSelectionado()}" 
+                                 style="border-radius: 50%; width: 100px; height: 100px;"/>
+                        </b:panel>
 
-                    </b:panelGrid>
+                        <div style="position: absolute; top: 60px; left: 40px; background: none; border: none;">
+                            <img src="data:image/jpeg;base64, #{petController.imagensDosTutoresDoPet(petController.tutores()).get(0)}"
+                                 style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;"/>
+                        </div>
+                        <c:if test="#{petController.tutores().size() eq 2}">
+                            <div style="position: absolute; top: 60px; left: 120px; background: none; border: none;">
+                                <img src="data:image/jpeg;base64, #{petController.imagensDosTutoresDoPet(petController.tutores()).get(1)}"
+                                     style="width: 35px; height: 35px; object-fit: cover; border-radius: 50%;"/>
+                            </div>
+                        </c:if>
 
-                </b:panel>
-            </b:panelGrid>
+                        <b:panelGrid columns="2" colSpans="2,10">
+                            <h:outputText value="Nome"/>
+                            <h:outputText value="#{petController.selectionPet.nome}"/>
+
+                            <h:outputText value="Raça"/>
+                            <h:outputText value="#{petController.selectionPet.raca}"/>
+
+                            <h:outputText value="Porte"/>
+                            <h:outputText value="#{petController.selectionPet.porte}"/>
+
+                            <h:outputText value="Código"/>
+                            <h:outputText value="#{petController.selectionPet.codigoUnico}"/>
+                        </b:panelGrid>
+
+                        <div class="video-container">
+                            <c:forEach items="#{postagemBean.postagemVideos()}" var="post">
+                                <div class="video-item">
+                                    <h:outputText value="#{post.dataHoraPostagem}" />
+                                    <h3>Video de Pet</h3>
+                                    <video controls='controls'>
+                                        <source src="data:video/mp4;base64,#{postagemBean.formatarVideo(post.videoPet)}" type="video/mp4"/>
+                                    </video> 
+                                </div>
+
+                                <div class="video-item">
+                                    <h:outputText value="#{post.dataHoraPostagem}" />
+                                    <h3>Video de Tutor</h3>
+                                    <video controls='controls'>
+                                        <source src="data:video/mp4;base64,#{postagemBean.formatarVideo(post.videoTutor)}" type="video/mp4"/>
+                                    </video>
+                                </div>
+                            </c:forEach>
+                        </div>
+                        
+                        <!-- Componentes de Pesquisa e Lista de Pets Encontrados -->
+                        <h:panelGrid columns="2" style="margin-top: 10px; margin-right: 20px; margin-bottom: 40px;">
+                            <h:inputText value="#{petController.nomePesquisa}" style="margin-bottom: 10px;" />
+                            <h:commandButton value="Pesquisar" action="#{petController.pesquisarPets}" style="margin-top: -10px;" />
+                        </h:panelGrid>
+
+                        <c:if test="#{not empty petController.petsEncontrados}">
+                            <div class="search-results">
+                                <h2>Pets Encontrados:</h2>
+                                <table>
+                                    <tr>
+                                        <th>Foto</th>
+                                        <th>Nome</th>
+                                        <th>Raça</th>
+                                        <th>Porte</th>
+                                        <th>Código</th>
+                                    </tr>
+                                    <c:forEach items="#{petController.petsEncontrados}" var="pet">
+                                        <tr>
+                                            <td><img src="data:image/jpeg;base64,#{petController.imagemDoPetSelectionado()}" alt="#{pet.nome}" /></td>
+                                            <td>#{pet.nome}</td>
+                                            <td>#{pet.raca}</td>
+                                            <td>#{pet.porte}</td>
+                                            <td>#{pet.codigoUnico}</td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+                            </div>
+                        </c:if>
+
+                        <!-- Botão "Ir para Postagem" dentro do mesmo formulário -->
+                        <h:commandButton value="Ir para Postagem" action="#{navigationBean.irParaPostagem}" style="background-color: #69C9D0; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 8px; cursor: pointer; margin-top: 20px;" update="petForm" />
+                    </b:panel>
+                </b:panelGrid>
+            </div>
         </b:form>
-
-
     </h:body>
 </html>
-
