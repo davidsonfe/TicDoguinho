@@ -148,29 +148,33 @@
                         <c:if test="#{not empty petController.petsEncontrados}">
                             <div class="search-results">
                                 <h2>Pets Encontrados:</h2>
-                                <table>
-                                    <tr>
-                                        <th>Foto</th>
-                                        <th>Nome</th>
-                                        <th>Raça</th>
-                                        <th>Porte</th>
-                                        <th>Código</th>
-                                    </tr>
+                                <b:panelGrid columns="2" colSpans="2,10">
                                     <c:forEach items="#{petController.petsEncontrados}" var="pet">
-                                        <tr>
-                                            <td><img src="data:image/jpeg;base64,#{petController.imagemDoPetSelectionado()}" alt="#{pet.nome}" /></td>
-                                            <td>#{pet.nome}</td>
-                                            <td>#{pet.raca}</td>
-                                            <td>#{pet.porte}</td>
-                                            <td>#{pet.codigoUnico}</td>
-                                        </tr>
+                                        <b:panel styleClass="pet-panel">
+                                            <img src="data:image/jpeg;base64,#{petController.imagemDoPetSelectionado()}" alt="#{pet.nome}" class="img-fluid" />
+                                        </b:panel>
+                                        <b:panelGrid columns="2" colSpans="2,10">
+                                            <h:outputText value="Nome" />
+                                            <h:outputText value="#{pet.nome}" />
+
+                                            <h:outputText value="Raça" />
+                                            <h:outputText value="#{pet.raca}" />
+
+                                            <h:outputText value="Porte" />
+                                            <h:outputText value="#{pet.porte}" />
+
+                                            <h:outputText value="Código" />
+                                            <h:outputText value="#{pet.codigoUnico}" />
+                                        </b:panelGrid>
                                     </c:forEach>
-                                </table>
+                                </b:panelGrid>
                             </div>
                         </c:if>
 
+
+
                         <!-- Botão "Ir para Postagem" dentro do mesmo formulário -->
-                        <h:commandButton value="Ir para Postagem" action="#{navigationBean.irParaPostagem}" style="background-color: #69C9D0; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 8px; cursor: pointer; margin-top: 20px;" update="petForm" />
+                        <h:commandButton value="Ir para Postagem" action="#{navigationBean.irParaPostagem}" style="background-color: #69C9D0; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 8px; cursor: pointer; margin-top: 20px;"/>
                     </b:panel>
                 </b:panelGrid>
             </div>
