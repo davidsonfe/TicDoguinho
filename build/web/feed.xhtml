@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Facelet Title</title>
+        <style>
+            /* Estilo básico para o layout do vídeo */
+            .video-container {
+                position: relative;
+                width: 100%;
+                max-width: 600px; /* Ajuste conforme necessário */
+                margin: 0 auto;
+            }
+
+            .video-container video {
+                width: 100%;
+                height: auto;
+                display: block;
+                border-radius: 8px; /* Borda arredondada */
+                margin-bottom: 10px; /* Espaçamento entre os vídeos */
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <c:forEach items="#{postagemBean.videosSeguindo()}" var="post">
+            <div class="video-container">
+                <h3>Video do Pet</h3>
+                <video controls='controls'>
+                    <source src="data:video/mp4;base64,#{postagemBean.formatarVideo(post.videoPet)}" type="video/mp4"/>
+                </video>
+            </div>
+            
+            <div class="video-container">
+                <h3>Video do Tutor</h3>
+                <video controls='controls'>
+                    <source src="data:video/mp4;base64,#{postagemBean.formatarVideo(post.videoTutor)}" type="video/mp4"/>
+                </video>
+            </div>
+        </c:forEach>
+    </h:body>
+</html>

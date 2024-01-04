@@ -9,6 +9,7 @@ import com.devcaotics.model.negocio.Tutor;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -139,6 +140,30 @@ private byte[] convertInputStreamToByteArray(InputStream inputStream) throws IOE
     buffer.flush();
     return buffer.toByteArray();
 }
+
+    public List<Postagem> videosSeguindo() {
+        Tutor tutorLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance().getExternalContext()
+                .getSession(true)).getAttribute("loginController")).getTutorLogado();
+        List<Pet> pets = ManagerDao.getCurrentInstance().read("select p from Pet p join Tutor t where t.codigo = " + tutorLogado.getCodigo(), Tutor.class);
+
+        List<Pet> petsSeguindo = new ArrayList<>();
+        for (Pet p : pets) {
+            for (Pet ps : p.getSeguindo()) {
+                petsSeguindo.add(ps);
+            }
+        }
+
+        List<Postagem> posts = new ArrayList<>();
+
+        for (Pet p : petsSeguindo) {
+            List<Postagem> postagemList = ManagerDao.getCurrentInstance().read("select po from Postagem po where po.pet.codigo = " + p.getCodigo(), Postagem.class);
+            if (!postagemList.isEmpty()) {
+                posts.add(postagemList.get(0));
+            }
+        }
+
+        return posts;
+    }
 
 
     

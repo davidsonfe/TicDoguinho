@@ -5,7 +5,9 @@
  */
 package com.devcaotics.model.negocio;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -14,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 /**
@@ -45,6 +48,32 @@ public class Pet {
     
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     private List<CompartilharPet> compartilhamentos;
+    
+    @ManyToMany(mappedBy = "seguindo")
+    private List<Pet> seguidor = new ArrayList<>();
+    @ManyToMany
+    private List<Pet> seguindo = new ArrayList<>();
+    
+    
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Pet otherPet = (Pet) obj;
+
+        return Objects.equals(this.getCodigo(), otherPet.getCodigo());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getCodigo());
+    }
     
     public String getNome() {
         return nome;
@@ -94,9 +123,7 @@ public class Pet {
         this.codigoUnico = codigoUnico;
     }
 
-//    public Object getCompartilhamentos() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
+
 
     public int getCodigo() {
         return codigo;
@@ -120,5 +147,21 @@ public class Pet {
 
     public void setCompartilhamentos(List<CompartilharPet> compartilhamentos) {
         this.compartilhamentos = compartilhamentos;
+    }
+
+    public List<Pet> getSeguidor() {
+        return seguidor;
+    }
+
+    public void setSeguidor(List<Pet> seguidor) {
+        this.seguidor = seguidor;
+    }
+
+    public List<Pet> getSeguindo() {
+        return seguindo;
+    }
+
+    public void setSeguindo(List<Pet> seguindo) {
+        this.seguindo = seguindo;
     }
 }

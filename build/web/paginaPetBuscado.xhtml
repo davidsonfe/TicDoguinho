@@ -48,42 +48,53 @@
 
     <h:body>
         <ui:include src="menuTutor.xhtml"/>
-
+        <f:view>
+            <f:metadata>
+                <f:viewParam name="petCodigo" value="#{petController.petSearchCodigo}" />
+            </f:metadata>
+        </f:view>
         <div class="container">
             <b:panelGrid columns="2" colSpans="2,10" style="position: relative;">
                 <b:panel style="width: 600px;">
 
                     <!-- Exibir nome e imagem do pet -->
-                    <h:outputText value="#{petController.selectionPet.nome}" />
+                    <h:outputText value="#{petController.pegarPetPesquisado().nome}" />
                     <b:panel style="position: relative;">
-                        <img class="imgPet" src="data:image/jpeg;base64,#{petController.imagemDoPetSelectionado()}" 
+                        <img class="imgPet" src="data:image/jpeg;base64,#{petController.imagemDoPetPesquisado(petController.pegarPetPesquisado())}" 
                              style="border-radius: 50%; width: 100px; height: 100px;"/>
                     </b:panel>
 
                     <!-- Exibir informações do pet -->
                     <b:panelGrid columns="2" colSpans="2,10">
                         <h:outputText value="Nome" />
-                        <h:outputText value="#{petController.selectionPet.nome}" />
+                        <h:outputText value="#{petController.pegarPetPesquisado().nome}" />
 
                         <h:outputText value="Raça" />
-                        <h:outputText value="#{petController.selectionPet.raca}" />
+                        <h:outputText value="#{petController.pegarPetPesquisado().raca}" />
 
                         <h:outputText value="Porte" />
-                        <h:outputText value="#{petController.selectionPet.porte}" />
+                        <h:outputText value="#{petController.pegarPetPesquisado().porte}" />
 
                         <h:outputText value="Código" />
-                        <h:outputText value="#{petController.selectionPet.codigoUnico}" />
+                        <h:outputText value="#{petController.pegarPetPesquisado().codigoUnico}" />
                     </b:panelGrid>
-                    
-                    
+
+
                     <h:form>
-                        <p:commandButton value="Seguir Pet" action="#{petController.seguidorMetodo()}"/>  
+                        <c:choose>
+                            <c:when test="#{petController.jaSeguidor()}">
+                                <b:commandButton value="Deixar de Seguir Pet" action="#{petController.deixardeSeguir()}"/>
+                            </c:when>
+                            <c:otherwise>
+                                <b:commandButton value="Seguir Pet" action="#{petController.seguir()}"/>
+                            </c:otherwise>
+                        </c:choose>
                     </h:form> 
-                    
+
 
                     <!-- Exibir vídeos do pet -->
                     <div class="video-container">
-                        <c:forEach items="#{postagemBean.postagemVideos()}" var="post">
+                        <c:forEach items="#{petController.postagemVideosBuscado()}" var="post">
                             <div class="video-item">
                                 <h:outputText value="#{post.dataHoraPostagem}" />
                                 <h3>Video de Pet</h3>

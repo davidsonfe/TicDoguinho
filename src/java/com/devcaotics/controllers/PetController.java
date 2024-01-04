@@ -8,7 +8,7 @@ package com.devcaotics.controllers;
 import com.devcaotics.model.dao.ManagerDao;
 import com.devcaotics.model.negocio.CompartilharPet;
 import com.devcaotics.model.negocio.Pet;
-import com.devcaotics.model.negocio.SeguirPets;
+import com.devcaotics.model.negocio.Postagem;
 import com.devcaotics.model.negocio.Tutor;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,11 +36,12 @@ public class PetController {
     private Pet petCadastro;
 
     private Pet selectionPet;
-    
+
     private String nomePesquisa;
     private List<Pet> petsEncontrados;
-    
+
     private int petSearchCodigo;
+    private Pet petPesquisado;
 
     @PostConstruct
     public void init() {
@@ -95,6 +96,11 @@ public class PetController {
         byte[] blob = this.selectionPet.getImagem();
         return blob != null ? Base64.getEncoder().encodeToString(blob) : "";
     }
+    
+    public String imagemDoPetPesquisado(Pet pet) {
+        byte[] blob = pet.getImagem();
+        return blob != null ? Base64.getEncoder().encodeToString(blob) : "";
+    }
 
     public String compartilhar(String codigo) {
         Pet pet = (Pet) ManagerDao.getCurrentInstance().read("select p from Pet p where p.codigoUnico = '" + codigo + "'", Pet.class).get(0);
@@ -119,7 +125,7 @@ public class PetController {
     public List<String> imagensDosTutoresDoPet(List<CompartilharPet> tutores) {
         List<String> imagens = new ArrayList<>();
         for (CompartilharPet cp : tutores) {
-             byte[] blob = cp.getTutor().getFoto();
+            byte[] blob = cp.getTutor().getFoto();
             imagens.add(blob != null ? Base64.getEncoder().encodeToString(cp.getTutor().getFoto()) : "");
         }
 
@@ -139,7 +145,7 @@ public class PetController {
 
         return new ArrayList<>();
     }
-    
+
     public String alterar() {
 
         ManagerDao.getCurrentInstance().update(selectionPet);
@@ -150,50 +156,45 @@ public class PetController {
         return "editarPet.xhtml";
     }
 
-
     public String excluir() {
-    // Lógica de exclusão aqui
-    List<CompartilharPet> compartilhamentos = ManagerDao.getCurrentInstance().read("select cp from CompartilharPet cp where cp.pet.codigo = " + selectionPet.getCodigo(), CompartilharPet.class);
+        // Lógica de exclusão aqui
+        List<CompartilharPet> compartilhamentos = ManagerDao.getCurrentInstance().read("select cp from CompartilharPet cp where cp.pet.codigo = " + selectionPet.getCodigo(), CompartilharPet.class);
 
-    // Excluir os compartilhamentos
-    for (CompartilharPet compartilhamento : compartilhamentos) {
-        ManagerDao.getCurrentInstance().delete(compartilhamento);
+        // Excluir os compartilhamentos
+        for (CompartilharPet compartilhamento : compartilhamentos) {
+            ManagerDao.getCurrentInstance().delete(compartilhamento);
+        }
+
+        // Finalmente, excluir o pet
+        ManagerDao.getCurrentInstance().delete(selectionPet);
+
+        FacesContext.getCurrentInstance().addMessage("editarPetForm:mensagemExclusao",
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "O pet foi excluído com sucesso."));
+
+        return "editarPet.xhtml";
     }
 
-    // Finalmente, excluir o pet
-    ManagerDao.getCurrentInstance().delete(selectionPet);
-
-    FacesContext.getCurrentInstance().addMessage("editarPetForm:mensagemExclusao",
-            new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "O pet foi excluído com sucesso."));
-
-    return "editarPet.xhtml";
-}
-
-    
     public String selectPetForEditing(Pet pet) {
         this.selectionPet = pet;
         return "editarPet.xhtml?faces-redirect=true";
     }
-    
-    
+
     // Adicione o seguinte método ao seu controlador
-public void pesquisarPets() {
-    if (nomePesquisa != null && !nomePesquisa.isEmpty()) {
-        String query = "select p from Pet p where p.nome = '" + nomePesquisa + "'";
-        petsEncontrados = ManagerDao.getCurrentInstance().read(query, Pet.class);
+    public void pesquisarPets() {
+        if (nomePesquisa != null && !nomePesquisa.isEmpty()) {
+            String query = "select p from Pet p where p.nome = '" + nomePesquisa + "'";
+            petsEncontrados = ManagerDao.getCurrentInstance().read(query, Pet.class);
 
-        // Lógica adicional, se necessário
-
-    } else {
-        addErrorMessage("Digite um nome para realizar a pesquisa.");
+            // Lógica adicional, se necessário
+        } else {
+            addErrorMessage("Digite um nome para realizar a pesquisa.");
+        }
     }
-}
-
 
     private void addErrorMessage(String message) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
     }
-    
+
     public void pesquisarPetPorCodigo() {
         if (petSearchCodigo > 0) {
             String query = "select p from Pet p where p.codigo = " + petSearchCodigo;
@@ -210,41 +211,55 @@ public void pesquisarPets() {
             addErrorMessage("Digite um código válido para realizar a pesquisa.");
         }
     }
-    
-    
-    public void seguidorMetodo() {
-         System.out.println("Método seguidorMetodo() foi executado!");
-        // Obtenha o tutor logado
-        Tutor tutorLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance().getExternalContext()
-                .getSession(true)).getAttribute("loginController")).getTutorLogado();
 
-        // Verifique se o tutor já está seguindo o pet
-        if (!isTutorSeguindoPet(tutorLogado, selectionPet)) {
-            // Se não estiver seguindo, crie a relação de seguir
-            SeguirPets seguirPet = new SeguirPets();
-            seguirPet.setSeguidor(tutorLogado);
-            seguirPet.setPetSeguido(selectionPet);
+    public void seguir() {
 
-            // Salve a relação no banco de dados ou onde for apropriado
-            ManagerDao.getCurrentInstance().insert(seguirPet);
+        Pet pet = (Pet) ManagerDao.getCurrentInstance().read("select p from Pet p where p.codigo = " + this.petSearchCodigo, Pet.class).get(0);
+        this.selectionPet.getSeguindo().add(pet);
 
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage("Sucesso", "Agora você está seguindo este pet."));
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Você já está seguindo este pet."));
+        pet.getSeguidor().add(this.selectionPet);
+
+        ManagerDao.getCurrentInstance().update(pet);
+        ManagerDao.getCurrentInstance().update(this.selectionPet);
+    }
+
+    public Pet pegarPetPesquisado() {
+        return (Pet) ManagerDao.getCurrentInstance().read("select p from Pet p where p.codigo = " + this.petSearchCodigo, Pet.class).get(0);
+    }
+
+    public void deixardeSeguir() {
+
+        Pet pet = (Pet) ManagerDao.getCurrentInstance().read("select p from Pet p where p.codigo = " + this.petSearchCodigo, Pet.class).get(0);
+        this.selectionPet.getSeguindo().remove(pet);
+
+        pet.getSeguidor().remove(this.selectionPet);
+
+        ManagerDao.getCurrentInstance().update(pet);
+        ManagerDao.getCurrentInstance().update(this.selectionPet);
+    }
+
+    public boolean jaSeguidor() {
+
+        this.petPesquisado = (Pet) ManagerDao.getCurrentInstance().read("select p from Pet p where p.codigo = " + this.petSearchCodigo, Pet.class).get(0);
+
+        for (Pet p : this.selectionPet.getSeguindo()) {
+            if (p.getCodigo() == this.petPesquisado.getCodigo()) {
+                return true;
+            }
         }
-    }
 
-    public boolean isTutorSeguindoPet(Tutor tutor, Pet pet) {
-        // Verifique se o tutor já está seguindo o pet
-        String query = "select s from SeguirPet s where s.seguidor.codigo = " + tutor.getCodigo()
-                + " and s.petSeguido.codigo = " + pet.getCodigo();
-        List<SeguirPets> resultado = ManagerDao.getCurrentInstance().read(query, SeguirPets.class);
-
-        return !resultado.isEmpty();
+        return false;
     }
     
+    
+    public List<Postagem> postagemVideosBuscado() {
+
+        Pet pet = (Pet) ManagerDao.getCurrentInstance().read("select p from Pet p where p.codigo = " + this.petSearchCodigo, Pet.class).get(0);
+
+        List<Postagem> postagems = ManagerDao.getCurrentInstance().read("select p from Postagem p where p.pet.codigo = " + pet.getCodigo() + " order by p.dataHoraPostagem desc", Postagem.class);
+
+        return postagems;
+    }
 
     public Pet getPetCadastro() {
         return petCadastro;
