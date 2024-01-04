@@ -39,6 +39,10 @@ public class Postagem {
      @ManyToOne
     @JoinColumn(name = "tutor_codigo")
     private Tutor tutor;
+     
+     
+    @Column(name = "texto_postagem") 
+    private String textoPostagem;
     
     
     public Long getId() {
@@ -87,5 +91,13 @@ public class Postagem {
 
     public void setTutor(Tutor tutor) {
         this.tutor = tutor;
+    }
+
+    public String getTextoPostagem() {
+        return textoPostagem;
+    }
+
+    public void setTextoPostagem(String textoPostagem) {
+        this.textoPostagem = textoPostagem;
     }
 }

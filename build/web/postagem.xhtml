@@ -26,10 +26,13 @@
             <!-- Botão para submeter a postagem -->
             <h:outputText value="#{postagemBean.postagem.getDataHoraPostagem()}" />
             
-            <!-- Botão para submeter a postagem -->
-            <!-- Adicione um actionListener para chamar um método que realiza a postagem -->
-            <!-- Botão para submeter a postagem -->
-            <b:commandButton value="Postar" action="#{postagemBean.realizarPostagem}" />
+           
+            <p:outputLabel value="Texto da Postagem:" style="display:block; margin-top:10px;" />
+            <p:inputTextarea value="#{postagemBean.postagem.textoPostagem}" rows="5" cols="30" />
+            
+            <br />
+            
+            <b:commandButton value="Postar" action="#{postagemBean.realizarPostagem}" style="background-color:#E44D26; color:white; margin-top:10px;"/>
 
 
 

@@ -40,6 +40,8 @@ public class PostagemBean {
 public String realizarPostagem() {
     postagem.setDataHoraPostagem(new Date());
     
+    postagem.setTextoPostagem(postagem.getTextoPostagem());
+    
     Pet pet= ((PetController) ((HttpSession) FacesContext.getCurrentInstance()
                 .getExternalContext().getSession(true))
                 .getAttribute("petController")).getSelectionPet();

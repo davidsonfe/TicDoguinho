@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <h:head>
+        <title>Informações do Pet</title>
+        <!-- Adicione qualquer estilo ou script necessário -->
+        <style>
+            /* Adicione estilos conforme necessário */
+            .video-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                margin-top: 20px;
+            }
+
+            .video-item {
+                margin: 10px;
+                text-align: center;
+                width: 100%;
+                background-color: #FFFFFF; /* Cor de fundo do contêiner de vídeo */
+                padding: 15px; /* Espaçamento interno */
+                border-radius: 10px; /* Borda arredondada */
+            }
+
+            .video-item video {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .video-item h3 {
+                margin-top: 5px;
+                color: #E44D26; /* Cor do texto de título do TikTok */
+            }
+
+            .texto-postagem {
+                /* Adicione estilos conforme necessário para o texto da postagem */
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+        <ui:include src="menuTutor.xhtml"/>
+
+        <div class="container">
+            <b:panelGrid columns="2" colSpans="2,10" style="position: relative;">
+                <b:panel style="width: 600px;">
+
+                    <!-- Exibir nome e imagem do pet -->
+                    <h:outputText value="#{petController.selectionPet.nome}" />
+                    <b:panel style="position: relative;">
+                        <img class="imgPet" src="data:image/jpeg;base64,#{petController.imagemDoPetSelectionado()}" 
+                             style="border-radius: 50%; width: 100px; height: 100px;"/>
+                    </b:panel>
+
+                    <!-- Exibir informações do pet -->
+                    <b:panelGrid columns="2" colSpans="2,10">
+                        <h:outputText value="Nome" />
+                        <h:outputText value="#{petController.selectionPet.nome}" />
+
+                        <h:outputText value="Raça" />
+                        <h:outputText value="#{petController.selectionPet.raca}" />
+
+                        <h:outputText value="Porte" />
+                        <h:outputText value="#{petController.selectionPet.porte}" />
+
+                        <h:outputText value="Código" />
+                        <h:outputText value="#{petController.selectionPet.codigoUnico}" />
+                    </b:panelGrid>
+                    
+                    
+                    <h:form>
+                        <p:commandButton value="Seguir Pet" action="#{petController.seguidorMetodo()}"/>  
+                    </h:form> 
+                    
+
+                    <!-- Exibir vídeos do pet -->
+                    <div class="video-container">
+                        <c:forEach items="#{postagemBean.postagemVideos()}" var="post">
+                            <div class="video-item">
+                                <h:outputText value="#{post.dataHoraPostagem}" />
+                                <h3>Video de Pet</h3>
+                                <video controls='controls'>
+                                    <source src="data:video/mp4;base64,#{postagemBean.formatarVideo(post.videoPet)}" type="video/mp4"/>
+                                </video>
+                                <div class="texto-postagem">
+                                    <h:outputText value="#{post.textoPostagem}" />
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </div>
+
+                    <!-- Exibir vídeos do tutor -->
+                    <div class="video-container">
+                        <c:forEach items="#{postagemBean.postagemVideos()}" var="postTutor">
+                            <div class="video-item">
+                                <h:outputText value="#{postTutor.dataHoraPostagem}" />
+                                <h3>Video de Tutor</h3>
+                                <video controls='controls'>
+                                    <source src="data:video/mp4;base64,#{postagemBean.formatarVideo(postTutor.videoTutor)}" type="video/mp4"/>
+                                </video>
+                                <div class="texto-postagem">
+                                    <h:outputText value="#{postTutor.textoPostagem}" />
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </div>
+
+                    <!-- Adicione mais informações conforme necessário -->
+
+                </b:panel>
+            </b:panelGrid>
+        </div>
+    </h:body>
+</html>

@@ -8,6 +8,7 @@ package com.devcaotics.controllers;
 import com.devcaotics.model.dao.ManagerDao;
 import com.devcaotics.model.negocio.CompartilharPet;
 import com.devcaotics.model.negocio.Pet;
+import com.devcaotics.model.negocio.SeguirPets;
 import com.devcaotics.model.negocio.Tutor;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,8 +21,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import javax.faces.context.FacesContext;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpSession;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -40,6 +39,8 @@ public class PetController {
     
     private String nomePesquisa;
     private List<Pet> petsEncontrados;
+    
+    private int petSearchCodigo;
 
     @PostConstruct
     public void init() {
@@ -193,7 +194,57 @@ public void pesquisarPets() {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
     }
     
+    public void pesquisarPetPorCodigo() {
+        if (petSearchCodigo > 0) {
+            String query = "select p from Pet p where p.codigo = " + petSearchCodigo;
+            List<Pet> resultado = ManagerDao.getCurrentInstance().read(query, Pet.class);
 
+            if (!resultado.isEmpty()) {
+                // Pet encontrado, você pode lidar com o resultado como necessário
+                selectionPet = resultado.get(0);
+            } else {
+                // Nenhum pet encontrado com o código fornecido
+                addErrorMessage("Nenhum pet encontrado com o código: " + petSearchCodigo);
+            }
+        } else {
+            addErrorMessage("Digite um código válido para realizar a pesquisa.");
+        }
+    }
+    
+    
+    public void seguidorMetodo() {
+         System.out.println("Método seguidorMetodo() foi executado!");
+        // Obtenha o tutor logado
+        Tutor tutorLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance().getExternalContext()
+                .getSession(true)).getAttribute("loginController")).getTutorLogado();
+
+        // Verifique se o tutor já está seguindo o pet
+        if (!isTutorSeguindoPet(tutorLogado, selectionPet)) {
+            // Se não estiver seguindo, crie a relação de seguir
+            SeguirPets seguirPet = new SeguirPets();
+            seguirPet.setSeguidor(tutorLogado);
+            seguirPet.setPetSeguido(selectionPet);
+
+            // Salve a relação no banco de dados ou onde for apropriado
+            ManagerDao.getCurrentInstance().insert(seguirPet);
+
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage("Sucesso", "Agora você está seguindo este pet."));
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Você já está seguindo este pet."));
+        }
+    }
+
+    public boolean isTutorSeguindoPet(Tutor tutor, Pet pet) {
+        // Verifique se o tutor já está seguindo o pet
+        String query = "select s from SeguirPet s where s.seguidor.codigo = " + tutor.getCodigo()
+                + " and s.petSeguido.codigo = " + pet.getCodigo();
+        List<SeguirPets> resultado = ManagerDao.getCurrentInstance().read(query, SeguirPets.class);
+
+        return !resultado.isEmpty();
+    }
+    
 
     public Pet getPetCadastro() {
         return petCadastro;
@@ -226,5 +277,12 @@ public void pesquisarPets() {
     public void setPetsEncontrados(List<Pet> petsEncontrados) {
         this.petsEncontrados = petsEncontrados;
     }
-    
+
+    public int getPetSearchCodigo() {
+        return petSearchCodigo;
+    }
+
+    public void setPetSearchCodigo(int petSearchCodigo) {
+        this.petSearchCodigo = petSearchCodigo;
+    }
 }

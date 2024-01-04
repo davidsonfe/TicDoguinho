@@ -126,7 +126,10 @@
                                     <h3>Video de Pet</h3>
                                     <video controls='controls'>
                                         <source src="data:video/mp4;base64,#{postagemBean.formatarVideo(post.videoPet)}" type="video/mp4"/>
-                                    </video> 
+                                    </video>
+                                    <div class="texto-postagem">
+                                        <h:outputText value="#{post.textoPostagem}" />
+                                    </div>
                                 </div>
 
                                 <div class="video-item">
@@ -135,6 +138,9 @@
                                     <video controls='controls'>
                                         <source src="data:video/mp4;base64,#{postagemBean.formatarVideo(post.videoTutor)}" type="video/mp4"/>
                                     </video>
+                                    <div class="texto-postagem">
+                                        <h:outputText value="#{post.textoPostagem}" />
+                                    </div>
                                 </div>
                             </c:forEach>
                         </div>
@@ -155,7 +161,9 @@
                                         </b:panel>
                                         <b:panelGrid columns="2" colSpans="2,10">
                                             <h:outputText value="Nome" />
-                                            <h:outputText value="#{pet.nome}" />
+                                            <h:link value="#{pet.nome}" outcome="paginaPetBuscado.xhtml">
+                                                <f:param name="petCodigo" value="#{pet.nome}" />
+                                            </h:link>
 
                                             <h:outputText value="Raça" />
                                             <h:outputText value="#{pet.raca}" />
